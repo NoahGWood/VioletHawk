@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}v/{{ sub.Title }}{% endblock %}
+
+{% block content %}
+<div class="row align-content-center"
+    style="background: url(http://0.0.0.0:8000/api/file/read/?download=true&UUID={{ sub.BannerImage }}) no-repeat center / cover;filter:none;height:200px">
+</div>
+<div class="row mt-2 mb-2" style="background-color: secondary;">
+    <div class="col-sm-1"
+        style="background-image:url(https://styles.redditmedia.com/t5_2ryez/styles/communityIcon_5g7bqpdm3qd51.jpeg?width=256&format=pjpg&v=enabled&s=2d67fad407aa46c16d67941f849baaecef8f1501);border-radius:32px;height:56px;width:56px">
+    </div>
+    <div class="col">
+        <div class="row">
+            <div class="col">
+                <h1>v/{{ sub.Title }} &nbsp;&nbsp;
+                    <span class="btn btn-info">Joined</span>
+                    <span class="btn"><i class="bi bi-bell"></i></span>
+                </h1>
+
+            </div>
+        </div>
+        <p class="row">
+            {{ sub.Headline }}
+        </p>
+    </div>
+</div>
+
+
+<div class="d-flex">
+    <div style="min-width: 60%;">
+        {% include 'forms/create_post.html' %}
+        <div class="card card-header  mt-2 mb-2">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group">
+                <input type="radio" class="btn-check" name="btnradio" id="hotBtn" autocomplete="off" checked>
+                <label class="btn btn-outline-info" for="hotBtn"><i class="bi bi-fire"></i> &nbsp; Hot</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="newBtn" autocomplete="off">
+                <label class="btn btn-outline-info" for="newBtn"><i class="bi bi-newspaper"></i> &nbsp; New</label>
+
+                <input type="radio" class="btn-check" name="btnradio" id="topBtn" autocomplete="off">
+                <label class="btn btn-outline-info" for="topBtn"><i class="bi bi-award"></i> &nbsp; Top</input></label>
+                <input type="radio" class="btn-check" name="btnradio" id="otherBtn" autocomplete="off">
+                <label class="btn btn-outline-info" for="otherBtn">...</input></label>
+            </div>
+        </div>
+        {% if posts %}
+        {% for post in posts %}
+        <div class="row card-group">
+            <div class="col card card-header" style="max-width: 87px;">
+                <div class="row text-center">
+                    {% if post.LIKED %}
+                    <i class="bi bi-arrow-up-circle-fill" onclick="upVote('{{post.UUID}}')" id="{{post.UUID}}-up"></i>
+                    {% else %}
+                    <i class="bi bi-arrow-up-circle fa-5x" onclick="upVote('{{post.UUID}}')" id="{{post.UUID}}-up"></i>
+                    {% endif %}
+                </div>
+                <div class="row text-center mt-3">
+                    {% if post.Votes >= 1000000 %}
+                    <p id="{{post.UUID}}">{{ post.Votes % 1000000 }}M</p>
+                    {% elif post.Votes >= 1000 %}
+                    <p id="{{post.UUID}}">{{ post.Votes % 1000 }}K</p>
+                    {% else %}
+                    <p id="{{post.UUID}}">{{ post.Votes }}</p>
+                    {% endif %}
+                </div>
+                <div class="row text-center">
+                    {% if post.DISLIKED %}
+                    <i class="bi bi-arrow-down-circle-fill" onclick="downVote('{{post.UUID}}')"
+                        id="{{post.UUID}}-down"></i>
+                    {% else %}
+                    <i class="bi bi-arrow-down-circle" onclick="downVote('{{post.UUID}}')" id="{{post.UUID}}-down"></i>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col card">
+                <div class="card-header-pills">
+                    <h5>{{ post.Title }}</h5>
+                </div>
+                <div id="post-{{post.UUID}}" class="card-body" ondblclick="window.location.href='/v/{{sub.Title}}/{{post.UUID}}'">
+                    {% if post.Files %}
+                    <div id="carousel{{post.UUID}}" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div class="carousel-item active">
+                                <img onclick="ViewImage('{{post.UUID}}');"
+                                    class="d-block w-100"
+                                    src="http://0.0.0.0:8000/api/file/read/?download=true&UUID={{ post.Files[0] }}">
+                            </div>
+                            {% for file in post.Files[1:] %}
+                            <div class="carousel-item">
+                                <img onclick="ViewImage('{{post.UUID}}');" class="d-block w-100"
+                                    src="http://0.0.0.0:8000/api/file/read/?download=true&UUID={{ file }}">
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel{{post.UUID}}"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </button>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carousel{{post.UUID}}"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </button>
+                    </div>
+                    {% endif %}
+                    {{ post.Content }}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        No posts found.
+        {% endif %}
+    </div>
+    <div class="ms-lg-4 d-none d-md-block d-lg-block d-xl-block" style="min-width:30%;">
+        {% include 'partials/about.html' %}
+        {% include 'partials/rules.html' %}
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="imageViewer" tabindex="-1"
+        aria-labelledby="imageViewerLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="min-width: 75%;">
+            <div class="modal-content" id="imageViewerContent">
+
+            </div>
+        </div>
+    </div>
+    <button id="launchImageViewerModal" type="button" data-bs-toggle="modal" data-bs-target="#imageViewer" hidden>Launch modal</button>
+
+    <script>
+        var URL = "{{ sub.Title }}";
+        const imageViewerContent = document.getElementById("imageViewerContent");
+        const launchImageViewerModal = document.getElementById("launchImageViewerModal");
+        var child;
+        var postid;
+
+        document.getElementById("imageViewer").addEventListener("hide.bs.modal", event => {
+            document.getElementById("post-"+postid).appendChild(child);
+        });
+
+        function ViewImage(imgId) {
+            console.log("CLICKING: " + imgId);
+            postid = imgId;
+            child = document.getElementById("carousel"+imgId);
+            imageViewerContent.appendChild(child);
+            launchImageViewerModal.click();
+        }
+
+        function upVote(uuid) {
+            console.log("Upvoting post: " + uuid);
+            fetch("http://0.0.0.0:8000/api/post/upvote/" + uuid, {
+                method: "POST",
+                credentials: "include",
+            }).then(res => res.json())
+                .then(res => {
+                    document.getElementById(uuid).innerHTML = res.Votes;
+                    if (document.getElementById(uuid + "-up").classList.contains("bi-arrow-up-circle-fill")) {
+                        // un-highlight
+                        document.getElementById(uuid + "-up").classList.remove("bi-arrow-up-circle-fill");
+                        document.getElementById(uuid + "-up").classList.add("bi-arrow-up-circle");
+                    } else {
+                        document.getElementById(uuid + "-up").classList.add("bi-arrow-up-circle-fill");
+                        document.getElementById(uuid + "-up").classList.remove("bi-arrow-up-circle");
+                    }
+                    document.getElementById(uuid + "-down").classList.add("bi-arrow-down-circle");
+                    document.getElementById(uuid + "-down").classList.remove("bi-arrow-down-circle-fill");
+                });
+        }
+
+        function downVote(uuid) {
+            console.log("Downvoting post: " + uuid);
+            fetch("http://0.0.0.0:8000/api/post/downvote/" + uuid, {
+                method: "POST",
+                credentials: "include",
+            }).then(res => res.json())
+                .then(res => {
+                    document.getElementById(uuid).innerHTML = res.Votes;
+                    if (document.getElementById(uuid + "-down").classList.contains("bi-arrow-down-circle-fill")) {
+                        document.getElementById(uuid + "-down").classList.add("bi-arrow-down-circle");
+                        document.getElementById(uuid + "-down").classList.remove("bi-arrow-down-circle-fill");
+                    } else {
+                        document.getElementById(uuid + "-down").classList.remove("bi-arrow-down-circle");
+                        document.getElementById(uuid + "-down").classList.add("bi-arrow-down-circle-fill");
+                    }
+                    document.getElementById(uuid + "-up").classList.add("bi-arrow-up-circle");
+                    document.getElementById(uuid + "-up").classList.remove("bi-arrow-up-circle-fill");
+                });
+        }
+    </script>
+
+
+    {% endblock %}

@@ -1,0 +1,31 @@
+<div class="card card-header">
+    {% if sub %}
+    <form method="post" action="/v/{{ sub.Title }}/new" enctype="multipart/form-data">
+        {% else %}
+        <form method="post" action="/new" enctype="multipart/form-data">
+            {% endif %}
+            <div class="input-group mb-3">
+                <span class="input-group-text"><i class="bi bi-person-square"></i></span>
+                <input type="text" name="title" class="form-control" placeholder="Title" required aria-required="true" />
+                <span class="input-group-text"><i class="bi bi-image-fill" onclick="AddFile();"></i></span>
+                <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" name="content" class="form-control" placeholder="Text (optional)" />
+                <button type="submit" class="btn btn-info">post</button>
+            </div>
+            <input type="file" id="fileInput" name="file" multiple hidden>
+            <input type="url" id="linkInput" name="url" hidden/>
+        </form>
+</div>
+
+<script>
+    function AddFile() {
+        f = document.getElementById("fileInput");
+        f.click();
+    }
+    function AddURL() {
+        u = document.getElementById("linkInput");
+        u.click()
+    }
+</script>

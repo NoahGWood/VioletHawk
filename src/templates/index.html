@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %} VioletHawk | Superior Social Media {% endblock %}
+
+{% block content %}
+    {% include 'forms/create_post.html' %}
+    <div class="row gy-3">
+        <div class="col">
+            {% include 'partials/post.html' %}
+        </div>
+    </div>
+    <div class="row gy-3">
+        <div class="col">
+            {% include 'partials/post.html' %}
+        </div>
+        <div class="col">
+            {% include 'partials/post.html' %}
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | VioletHawk{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center" style="width: 100%">
+    <div class="card">
+        <div class="card-header text-center">
+            <h4>Register</h4>
+        </div>
+        <div class="card-body">
+            {% include "forms/register_form.html" %}
+        </div>
+    </div>
+</div>
+{% endblock %}

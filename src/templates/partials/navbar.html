@@ -1,0 +1,57 @@
+<nav class="text-white navbar navbar-expand-lg d-flex justify-content-between">
+    <a class="navbar-brand"  style="min-width:8vw; margin-left: 1vw;" href="/">
+        <i class="col bi bi-moon-stars-fill" ></i>&nbsp;&nbsp;VioletHawk</a>
+    <form class="btn-group" style="min-width:70vw" method="GET" action="/search">
+        <select class="btn btn-light btn-group" name="category" style="min-width:15vw">
+            <option>All</option>
+        </select>
+        <input class="form-control btn btn-light" type="search" placeholder="Search" aria-label="Search" style="text-align: start;" name="keywords">
+        <button class="btn btn-info m-auto" type="submit">Search</button>
+    </form>
+    <button class="navbar-toggler ms-auto" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+        aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <span class="collapse navbar-collapse m-auto" id="mainNavbar">
+        <div class="d-flex justify-content-end m-auto">
+            <div class="btn-group" role="group" aria-label="Basic radio toggle button group" style="min-width:5vw;">
+                <input type="radio" class="btn-check" name="btnradio" id="darkModeBtn" autocomplete="off" checked onclick="darkMode()">
+                <label class="btn btn-outline-secondary" for="darkModeBtn"><i class="bi bi-brightness-low"></i></label>       
+              
+                <input type="radio" class="btn-check" name="btnradio" id="lightModeBtn" autocomplete="off" onclick="lightMode()">
+                <label class="btn btn-outline-primary" for="lightModeBtn"><i class="bi bi-brightness-high"></i></label>
+              </div>
+    
+            {% if user.Email %}
+            <a class="nav-item btn btn-outline" href="/messages"><i class="bi bi-chat-dots-fill" ></i></a>
+            <a class="nav-item btn btn-outline" href="/create"><i class="bi bi-plus-circle"></i></a>
+            <a class="nav-item btn btn-outline" href="/messages"><i class="bi bi-badge-ad"></i></a>
+            <div class="dropdown">
+                <a class="nav-item btn btn-outline dropdown-toggle" href="#" role="button"
+                    data-bs-toggle="dropdown" data-bs-target="#accountDropdown" aria-expanded="false">Account</a>
+                <ul class="dropdown-menu dropdown-menu-end" id="accountDropdown">
+                    <li><a class="dropdown-item" href="/dashboard">Dashboard</a></li>
+                    <li><a class="dropdown-item" href="/logout">Logout</a></li>
+                </ul>
+            </div>
+            {% else %}
+            <a class="nav-item btn btn-outline" href="/register" style="min-width:5vw; color:#0dcaf0">Register</a>
+            <a class="nav-item btn btn-outline" href="/login" style="min-width:5vw">Login</a>
+            {% endif %}
+        </div>
+    </span>
+</nav>
+<script>
+    var root = document.getElementById("root")
+    function darkMode(){
+        root.setAttribute("data-bs-theme","dark")
+    }
+    function lightMode(){
+        root.setAttribute("data-bs-theme","light")
+    }
+</script>
+<style>
+    .bi {
+      color:#0dcaf0;
+    }
+</style>
